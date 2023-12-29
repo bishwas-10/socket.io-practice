@@ -19,21 +19,24 @@ const io = new Server(server, {
 
 io.on("connection", (socket)=>{
     console.log(`connection established with user ${socket.id}`),
-   socket.on("join_room",(data)=>{
-    const {name,section } = data;
-    socket.join(section);
+  //  socket.on("join_room",(data)=>{
+  //   const {name,section } = data;
+  //   socket.join(section);
    
-    let created_time = new Date();
-    socket.to(section).emit('receive_message',{
-        message:`${name} has just joined the room `,
-        username:name,
-        created_time   
-    });
-    socket.emit('receive_message',{
-        message:`welcome ${name}`,
-        created_time
-    })
-   }) 
+  //   let created_time = new Date();
+  //   socket.to(section).emit('receive_message',{
+  //       message:`${name} has just joined the room `,
+  //       username:name,
+  //       created_time   
+  //   });
+   
+  //  }) 
+   socket.on('message',(data)=>{
+    io.emit('message_response',data);
+  })
+  socket.on('disconnect', () => {
+    console.log('🔥: A user disconnected');
+  });
 });
 
 server.listen(4000, () => console.log("server listening on port 4000"));

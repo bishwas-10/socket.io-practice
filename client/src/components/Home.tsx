@@ -1,11 +1,14 @@
 import React, { ChangeEvent, useState } from "react";
-
-const Home = () => {
+import { useNavigate } from "react-router-dom";
+import { Socket } from "socket.io-client";
+const Home = ({socket}:{socket:Socket}) => {
+  const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [room, setRoom] = useState<string>("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(name, room);
+    localStorage.setItem('username',name);
+    navigate('/chat');
   };
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setRoom(e.target.value);
