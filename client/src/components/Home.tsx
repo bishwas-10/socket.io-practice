@@ -4,11 +4,12 @@ import { Socket } from "socket.io-client";
 const Home = ({socket}:{socket:Socket}) => {
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
-  const [room, setRoom] = useState<string>("");
+  const [room, setRoom] = useState<string>("JavaScript");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.setItem('username',name);
-    socket.emit('new_user',{name, socketId:socket.id});
+   
+    socket.emit('new_user',{name,room, socketId:socket.id});
     navigate('/chat');
   };
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -41,12 +42,13 @@ const Home = ({socket}:{socket:Socket}) => {
 
           <select
             value={room}
+            
             onChange={handleSelectChange}
             name="room"
             id="chatroom"
             className="w-40 focus:outline-none"
           >
-            <option value="JavaScript">JavaScript</option>
+            <option value="JavaScript" >JavaScript</option>
             <option value="Python">Python</option>
             <option value="C++">C++</option>
             <option value="Java">Java</option>

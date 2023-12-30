@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { ChatMessage } from "./ChatFooter";
 import { useNavigate } from "react-router-dom";
+import { JoinMessageProps } from "./ChatPage";
 
 const ChatBody = ({
   message,
   lastMessageRef,
   typingResponse,
-  typingStatus
+  typingStatus,
+  joinMessage
 }: {
   message: ChatMessage[];
   lastMessageRef: any;
   typingResponse: string;
-  typingStatus:boolean
+  typingStatus: boolean;
+  joinMessage: JoinMessageProps
 }) => {
   const navigate = useNavigate();
-  
+
   const handleLeaveCLick = () => {
     localStorage.removeItem("username");
     navigate("/");
@@ -23,10 +26,10 @@ const ChatBody = ({
   const hours = currentDate.getHours().toString().padStart(2, "0");
   const minutes = currentDate.getMinutes().toString().padStart(2, "0");
   const time = `${hours}:${minutes}`;
-
+console.log(joinMessage)
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [message,typingStatus]);
+  }, [message, typingStatus]);
 
   return (
     <div className="  h-full">
@@ -41,7 +44,9 @@ const ChatBody = ({
         </button>
       </div>
       <div className="relative top-20 w-full h-[87%] bottom-20  md:px-8 overflow-y-scroll">
-        {message.map((message: ChatMessage, index: number) => {
+        {message?.map((message: ChatMessage, index: number) => {
+          
+
           return message.username === localStorage.getItem("username") ? (
             <div
               key={index}
@@ -51,9 +56,16 @@ const ChatBody = ({
                 <p>You</p>
                 <span className="text-xs ">{time}</span>
               </div>
-              <p className="px-3 py-2 rounded-lg max-w-full bg-green-400 text-right">
-                {message.message}
-              </p>
+              <div className="flex flex-row items-end gap-1">
+                <p className="px-3 py-2 rounded-lg max-w-full bg-green-400 text-right">
+                  {message.message}
+                </p>
+                <img
+                className="rounded-full h-6 w-6"
+                  src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg"
+                  alt="person_image"
+                />
+              </div>
             </div>
           ) : (
             <div
@@ -64,19 +76,35 @@ const ChatBody = ({
                 <p>{message.username}</p>
                 <span className="text-xs ">{time}</span>
               </div>
-              <p className="px-3 py-2 rounded-lg max-w-full bg-red-400">
-                {message.message}
-              </p>
-              
+              <div className="flex flex-row-reverse items-end gap-1">
+                <p className="px-3 py-2 rounded-lg max-w-full bg-red-400 text-right">
+                  {message.message}
+                </p>
+                <img
+                className="rounded-full h-6 w-6"
+                  src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg"
+                  alt="person_image"
+                />
+              </div>
             </div>
           );
         })}
         {typingStatus ? (
-                <div className="w-[60%] mr-auto p-2 items-start">
-                  
-                  <p className="px-3 py-2 rounded-lg max-w-full bg-gray-300 italic text-sm">{typingResponse}</p>
-                </div>
-              ):" "}
+          <div className="w-[60%] mr-auto p-2 items-start">
+            <p className="px-3 py-2 rounded-lg max-w-full bg-gray-300 italic text-sm">
+              {typingResponse}
+            </p>
+          </div>
+        ) : (
+          " "
+        )}
+        {
+          joinMessage?.status && (
+            <div>
+              {joinMessage.messages.message}
+            </div>
+          )
+        }
         <div ref={lastMessageRef}></div>
       </div>
     </div>

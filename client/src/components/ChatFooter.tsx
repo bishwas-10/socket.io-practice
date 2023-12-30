@@ -6,6 +6,7 @@ export interface ChatMessage {
   username: string;
   id: string;
   socketID: string;
+  room:string | null;
 }
 const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Dispatch<SetStateAction<boolean>>})=>{
   const [message, setMessage] = useState<string>("");
@@ -19,7 +20,8 @@ const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Disp
         message: message,
         username: localStorage.getItem("username") as string,
         id: `${socket.id}_${Date.now()}`,
-        socketID:socket.id
+        socketID:socket.id,
+        room:null
       }
       socket.emit('message', newMessage);
       

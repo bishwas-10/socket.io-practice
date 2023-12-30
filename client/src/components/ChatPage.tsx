@@ -3,10 +3,25 @@ import ChatBar from "./ChatBar";
 import ChatBody from "./ChatBody";
 import ChatFooter, { ChatMessage } from "./ChatFooter";
 import { Socket } from "socket.io-client";
+
+export interface JoinMessageProps {
+  status:boolean,
+  messages:{
+    message:string
+    username:string,
+    createdAt:Date | null
+
+  }
+}
 const ChatPage = ({ socket }: { socket: Socket }) => {
   const [messages, setMessgaes] = useState<ChatMessage[]>([]);
   const [typingResponse, setTypingResponse] = useState<string>("");
   const [typingStatus, setTypingStatus] = useState<boolean>(false);
+  const [joinMessage, setJoinMessage]= useState<JoinMessageProps>({status:false, messages:{
+    message:"",
+    username:"",
+    createdAt:null
+  }})
   const lastMessageRef = useRef(null);
   useEffect(() => {
     socket.on("message_response", (data) =>
@@ -17,6 +32,14 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
       setTypingResponse(data);
       
     });
+    socket.on('join_room',(data)=>{
+      console.log("emmited")
+      setJoinMessage({status:true, messages:{
+        message:data.message,
+        username:data.username,
+        createdAt:data.createdAt
+      }});
+    })
     return () => {
       socket.off("message_response");
       socket.off("typing_response");
@@ -32,6 +55,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
             message={messages}
             typingStatus={typingStatus}
             typingResponse={typingResponse}
+            joinMessage={joinMessage}
             lastMessageRef={lastMessageRef}
           />
         </div>

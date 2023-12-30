@@ -16,7 +16,7 @@ const io = new Server(server, {
   },
 });
 
-let users:{name:string,socketId:string}[]=[];
+let users:{name:string,room:string,socketId:string}[]=[];
 io.on("connection", (socket)=>{
     console.log(`connection established with user ${socket.id}`),
   //  socket.on("join_room",(data)=>{
@@ -33,6 +33,13 @@ io.on("connection", (socket)=>{
   //  }) 
 
   socket.on("new_user",(data)=>{
+    socket.join(data.room);
+    socket.to(data.room).emit('join_room',{
+      message:`${data.name} has just joined a room`,
+      username:"CHAT_BOT",
+      createdTime:new Date()
+    })
+    console.log(data)
     users.push(data)
     io.emit('users',users)
   })
