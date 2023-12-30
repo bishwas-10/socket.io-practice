@@ -34,6 +34,11 @@ io.on("connection", (socket)=>{
    socket.on('message',(data)=>{
     io.emit('message_response',data);
   })
+
+  socket.on('user_typing',(data)=>{
+  
+   socket.broadcast.emit('typing_response',data);
+  })
   socket.on('disconnect', () => {
     console.log('🔥: A user disconnected');
   });

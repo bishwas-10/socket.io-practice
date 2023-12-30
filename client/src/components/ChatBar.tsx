@@ -2,7 +2,7 @@ import React from 'react'
 
 const ChatBar = () => {
   return (
-    <div className=" p-4 w-60 bg-[#bba666ee]">
+    <div className=" p-4 w-[30%] bg-[#bba666ee]">
       <p className="text-center text-2xl  font-bold">ChatBar</p>
       <div className="mt-10">
       <p className=" text-xl  font-bold">Active Users</p>
