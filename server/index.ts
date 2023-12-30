@@ -16,7 +16,7 @@ const io = new Server(server, {
   },
 });
 
-
+let users:{name:string,socketId:string}[]=[];
 io.on("connection", (socket)=>{
     console.log(`connection established with user ${socket.id}`),
   //  socket.on("join_room",(data)=>{
@@ -31,6 +31,11 @@ io.on("connection", (socket)=>{
   //   });
    
   //  }) 
+
+  socket.on("new_user",(data)=>{
+    users.push(data)
+    io.emit('users',users)
+  })
    socket.on('message',(data)=>{
     io.emit('message_response',data);
   })

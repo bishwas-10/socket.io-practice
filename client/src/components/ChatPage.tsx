@@ -25,7 +25,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
 
   return (
     <div className="flex flex-row w-screen h-screen max-h-screen bg-[#e5c564ee] overflow-hidden">
-      <ChatBar />
+      <ChatBar socket={socket}/>
       <div className="flex flex-col w-[70%] h-full">
         <div className="h-[88%]  ">
           <ChatBody
