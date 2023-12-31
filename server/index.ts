@@ -2,6 +2,10 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
+require("dotenv").config();
+//db connection
+import connectDb from "./utils/connectDb";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -19,18 +23,7 @@ const io = new Server(server, {
 let users: { name: string; room: string; socketId: string }[] = [];
 io.on("connection", (socket) => {
   console.log(`connection established with user ${socket.id}`),
-    //  socket.on("join_room",(data)=>{
-    //   const {name,section } = data;
-    //   socket.join(section);
-
-    //   let created_time = new Date();
-    //   socket.to(section).emit('receive_message',{
-    //       message:`${name} has just joined the room `,
-    //       username:name,
-    //       created_time
-    //   });
-
-    //  })
+ 
 
     socket.on("new_user", (data) => {
       socket.join(data.room);
@@ -42,7 +35,7 @@ io.on("connection", (socket) => {
         socketID: socket.id,
         room: data.room,
       });
-      console.log(data);
+
       users.push(data);
       io.emit("users", users);
     });
@@ -58,4 +51,12 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(4000, () => console.log("server listening on port 4000"));
+app.use(express.json({ limit: "30mb" }));
+app.use(cookieParser());
+app.use(express.urlencoded({ limit: "30mb", extended: true }));
+//server listening on port 4000
+
+connectDb().then(()=>{
+  server.listen(4000, () => console.log("server listening on port 4000"));
+}).catch((err)=>console.log(err));
+
