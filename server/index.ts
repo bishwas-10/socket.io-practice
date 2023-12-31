@@ -2,10 +2,15 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
+import cookieParser from "cookie-parser";
 require("dotenv").config();
 //db connection
 import connectDb from "./utils/connectDb";
-import cookieParser from "cookie-parser";
+
+//routes
+
+import authRouter from "./routes/auth"
+
 
 const app = express();
 
@@ -54,6 +59,8 @@ io.on("connection", (socket) => {
 app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
+
+app.use("api/users",authRouter)
 //server listening on port 4000
 
 connectDb().then(()=>{
