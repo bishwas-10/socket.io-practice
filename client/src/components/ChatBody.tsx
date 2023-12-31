@@ -8,25 +8,27 @@ const ChatBody = ({
   lastMessageRef,
   typingResponse,
   typingStatus,
-  joinMessage
+  joinMessage,
 }: {
   message: ChatMessage[];
   lastMessageRef: any;
   typingResponse: string;
   typingStatus: boolean;
-  joinMessage: JoinMessageProps
+  joinMessage: JoinMessageProps;
 }) => {
   const navigate = useNavigate();
-
+  console.log(message);
   const handleLeaveCLick = () => {
     localStorage.removeItem("username");
+    localStorage.removeItem("room");
+
     navigate("/");
   };
   const currentDate = new Date();
   const hours = currentDate.getHours().toString().padStart(2, "0");
   const minutes = currentDate.getMinutes().toString().padStart(2, "0");
   const time = `${hours}:${minutes}`;
-console.log(joinMessage)
+
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [message, typingStatus]);
@@ -43,9 +45,20 @@ console.log(joinMessage)
           Leave Chat
         </button>
       </div>
+
       <div className="relative top-20 w-full h-[87%] bottom-20  md:px-8 overflow-y-scroll">
         {message?.map((message: ChatMessage, index: number) => {
-          
+          if (message?.justJoined === true) {
+            return (
+             <div key={index} className="w-full flex justify-center">
+               <div  className="flex flex-row gap-2 bg-slate-300 rounded-lg p-2 mt-4">
+                <span>
+                  {message.username} 👋 :<p className="italic">{message.message}</p>
+                </span>
+              </div>
+             </div>
+            );
+          }
 
           return message.username === localStorage.getItem("username") ? (
             <div
@@ -61,7 +74,7 @@ console.log(joinMessage)
                   {message.message}
                 </p>
                 <img
-                className="rounded-full h-6 w-6"
+                  className="rounded-full h-6 w-6"
                   src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg"
                   alt="person_image"
                 />
@@ -81,7 +94,7 @@ console.log(joinMessage)
                   {message.message}
                 </p>
                 <img
-                className="rounded-full h-6 w-6"
+                  className="rounded-full h-6 w-6"
                   src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg"
                   alt="person_image"
                 />
@@ -98,13 +111,7 @@ console.log(joinMessage)
         ) : (
           " "
         )}
-        {
-          joinMessage?.status && (
-            <div>
-              {joinMessage.messages.message}
-            </div>
-          )
-        }
+
         <div ref={lastMessageRef}></div>
       </div>
     </div>

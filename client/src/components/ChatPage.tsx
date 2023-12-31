@@ -24,8 +24,11 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
   }})
   const lastMessageRef = useRef(null);
   useEffect(() => {
-    socket.on("message_response", (data) =>
-      setMessgaes((messages) => [...messages, data])
+    socket.on("message_response", (data) => {
+     console.log(data)
+       setMessgaes((messages) => [...messages, data]) 
+    }
+     
     );
     socket.on("typing_response", (data) => {
       setTypingStatus(true);
@@ -47,7 +50,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
   }, [socket]);
 
   return (
-    <div className="flex flex-row w-screen h-screen max-h-screen bg-[#e5c564ee] overflow-hidden">
+    <div className="flex flex-row w-screen h-screen max-h-screen bg-[#f5eabdee] overflow-hidden">
       <ChatBar socket={socket}/>
       <div className="flex flex-col w-[70%] h-full">
         <div className="h-[88%]  ">

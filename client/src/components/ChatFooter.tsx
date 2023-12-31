@@ -7,6 +7,7 @@ export interface ChatMessage {
   id: string;
   socketID: string;
   room:string | null;
+  justJoined?:boolean;
 }
 const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Dispatch<SetStateAction<boolean>>})=>{
   const [message, setMessage] = useState<string>("");
@@ -21,7 +22,7 @@ const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Disp
         username: localStorage.getItem("username") as string,
         id: `${socket.id}_${Date.now()}`,
         socketID:socket.id,
-        room:null
+        room:localStorage.getItem("room") as string,
       }
       socket.emit('message', newMessage);
       
