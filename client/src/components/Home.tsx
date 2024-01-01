@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { RootState } from "../store/store";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Home = ({socket}:{socket:Socket}) => {
   const userLoggedIn = useSelector((state:RootState)=> state.auth.currentUser)
   console.log(userLoggedIn)
@@ -22,8 +24,15 @@ const Home = ({socket}:{socket:Socket}) => {
   };
 
   useEffect(()=>{
+    
     if(!userLoggedIn){
       navigate('/auth')
+     
+    }else{
+      toast.success('User logged in successfully',{
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000,
+      })
     }
   },[])
   return (
@@ -73,6 +82,7 @@ const Home = ({socket}:{socket:Socket}) => {
           </button>
         </div>
       </form>
+      <ToastContainer/>
     </div>
   );
 };
