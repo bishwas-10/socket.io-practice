@@ -1,7 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
+import { RootState } from "../store/store";
 const Home = ({socket}:{socket:Socket}) => {
+  const userLoggedIn = useSelector((state:RootState)=> state.auth.currentUser)
+  console.log(userLoggedIn)
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [room, setRoom] = useState<string>("JavaScript");
@@ -16,6 +20,12 @@ const Home = ({socket}:{socket:Socket}) => {
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setRoom(e.target.value);
   };
+
+  useEffect(()=>{
+    if(!userLoggedIn){
+      navigate('/auth')
+    }
+  },[])
   return (
     <div className="bg-gray-900 w-screen h-screen flex flex-col items-center justify-center text-white">
       <form

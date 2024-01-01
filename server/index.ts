@@ -14,7 +14,11 @@ import authRouter from "./routes/auth"
 
 const app = express();
 
-app.use(cors()); // Add cors middleware
+app.use(cors({
+  origin:"http://localhost:3000",
+  methods: 'GET,POST, PUT, DELETE, PATCH',
+  credentials: true,
+})); // Add cors middleware
 
 const server = http.createServer(app);
 
@@ -59,6 +63,8 @@ io.on("connection", (socket) => {
 app.use(express.json({ limit: "30mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
+
+
 
 app.use("/api/users",authRouter)
 //server listening on port 4000
