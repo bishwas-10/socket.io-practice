@@ -9,7 +9,8 @@ import connectDb from "./utils/connectDb";
 
 //routes
 
-import authRouter from "./routes/auth"
+import authRouter from "./routes/auth";
+import userRouter from "./routes/user"
 
 
 const app = express();
@@ -66,7 +67,7 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 
 
-app.use("/api/users",authRouter)
+app.use("/api/users",authRouter,userRouter);
 //server listening on port 4000
 
 connectDb().then(()=>{

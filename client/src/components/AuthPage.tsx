@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from "../store/store";
+import { setToken } from "../store/tokenSlice";
 export interface FormDataProps {
   username?: string;
   email: string;
@@ -38,45 +39,44 @@ const AuthPage = () => {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setError({
-        status: true,
-        message: "Passwords do not match",
-      });
-      return;
-    } else if (formData.password.length < 8) {
-      setError({
-        status: true,
-        message: "Password must be at least 8 characters long",
-      });
-      return;
-    } else if (!/[a-z]/.test(formData.password)) {
-      setError({
-        status: true,
-        message: "Password must contain a lowercase letter",
-      });
-      return;
-    } else if (!/[A-Z]/.test(formData.password)) {
-      setError({
-        status: true,
-        message: "Password must contain an uppercase letter",
-      });
-      return;
-    } else if (!/\d/.test(formData.password)) {
-      setError({
-        status: true,
-        message: "Password must contain a digit",
-      });
-      return;
-    } else if (!/\W|_/.test(formData.password)) {
-      setError({
-        status: true,
-        message: "Password must contain a symbol",
-      });
-      return;
-    } else {
-      setError({status:true, message:""})
-      if (!isSignedUp) {
+    if (!isSignedUp) {
+      if (formData.password !== formData.confirmPassword) {
+        setError({
+          status: true,
+          message: "Passwords do not match",
+        });
+        return;
+      } else if (formData.password.length < 8) {
+        setError({
+          status: true,
+          message: "Password must be at least 8 characters long",
+        });
+        return;
+      } else if (!/[a-z]/.test(formData.password)) {
+        setError({
+          status: true,
+          message: "Password must contain a lowercase letter",
+        });
+        return;
+      } else if (!/[A-Z]/.test(formData.password)) {
+        setError({
+          status: true,
+          message: "Password must contain an uppercase letter",
+        });
+        return;
+      } else if (!/\d/.test(formData.password)) {
+        setError({
+          status: true,
+          message: "Password must contain a digit",
+        });
+        return;
+      } else if (!/\W|_/.test(formData.password)) {
+        setError({
+          status: true,
+          message: "Password must contain a symbol",
+        });
+        return;
+      } else {
         const signedUp = await userSignUp(formData);
         if (signedUp?.status) {
           setIsSignedUp(!isSignedUp);
@@ -90,18 +90,24 @@ const AuthPage = () => {
           });
         
         }
-      } else {
-        const loggedIn = await userLogin(formData);
-        if (loggedIn.status) {
-          dispatch(signInSuccess(loggedIn));
-          toast.success("User logged in successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 2000,
-          });
-          navigate("/");
-        }
+        setError({status:true, message:""})
+       
+      }
+
+     
+    } else {
+      const loggedIn = await userLogin(formData);
+      if (loggedIn.status) {
+        dispatch(signInSuccess(loggedIn.user));
+        dispatch(setToken(loggedIn.token))
+        toast.success("User logged in successfully", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+        });
+        navigate("/");
       }
     }
+   
   };
   const handleClick = () => {
     setIsSignedUp(!isSignedUp);

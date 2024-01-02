@@ -1,40 +1,45 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { RootState } from "../store/store";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-const Home = ({socket}:{socket:Socket}) => {
-  const userLoggedIn = useSelector((state:RootState)=> state.auth.currentUser)
-  console.log(userLoggedIn)
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getUser } from "../utils/api/auth";
+import { signInSuccess } from "../store/authSlice";
+const Home = ({ socket }: { socket: Socket }) => {
+  const userToken = useSelector(
+    (state: RootState) => state.token.token as string
+  );
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [room, setRoom] = useState<string>("JavaScript");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.setItem('username',name);
-    localStorage.setItem('room',room);
-   
-    socket.emit('new_user',{name,room, socketId:socket.id});
-    navigate('/chat');
+    localStorage.setItem("username", name);
+    localStorage.setItem("room", room);
+
+    socket.emit("new_user", { name, room, socketId: socket.id });
+    navigate("/chat");
   };
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setRoom(e.target.value);
   };
 
-  useEffect(()=>{
-    
-    if(!userLoggedIn){
-      navigate('/auth')
-     
+  const userDetails = async () => {
+    const data = await getUser(userToken);
+    if (data) {
+      if (data.status) {
+        dispatch(signInSuccess(data.user));
+      }
     }else{
-      toast.success('User logged in successfully',{
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 2000,
-      })
+      navigate("/auth")
     }
-  },[])
+  };
+  useEffect(() => {
+    userDetails();
+  }, []);
   return (
     <div className="bg-gray-900 w-screen h-screen flex flex-col items-center justify-center text-white">
       <form
@@ -62,13 +67,12 @@ const Home = ({socket}:{socket:Socket}) => {
 
           <select
             value={room}
-            
             onChange={handleSelectChange}
             name="room"
             id="chatroom"
             className="w-40 focus:outline-none"
           >
-            <option value="JavaScript" >JavaScript</option>
+            <option value="JavaScript">JavaScript</option>
             <option value="Python">Python</option>
             <option value="C++">C++</option>
             <option value="Java">Java</option>
@@ -82,7 +86,7 @@ const Home = ({socket}:{socket:Socket}) => {
           </button>
         </div>
       </form>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

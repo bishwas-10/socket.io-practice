@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import { hashPassword, verifyPassword } from "../utils/password";
 import createSecretToken from "../utils/createSecretToken";
-
+import jwt from "jsonwebtoken";
+import createRefreshToken from "../utils/createRefreshToken";
 export const logIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -32,6 +33,8 @@ export const logIn = async (req: Request, res: Response) => {
         .send({ status: false, message: "invalid credentials" });
     }
     const token = createSecretToken(existingUser._id);
+    
+    const refreshToken = createRefreshToken(existingUser._id);
     const user = {
       _id: existingUser._id,
       username: existingUser.username,
@@ -40,14 +43,14 @@ export const logIn = async (req: Request, res: Response) => {
     const expiryDate = new Date(Date.now() + 360000); //1hour
 
     res
-      .cookie("auth_token", token, {
+      .cookie("auth_token", refreshToken, {
         expires: expiryDate,
-        httpOnly: false,
+        httpOnly: true,
         sameSite: "none",
         secure: true,
       })
       .status(200)
-      .send({ status: true, message: "user logged in successfully", user });
+      .send({ status: true, message: "user logged in successfully", user,token });
   } catch (error) {
     console.log(error);
   }
