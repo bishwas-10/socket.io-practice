@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import "dotenv/config";
 
-const authUser = async (req: Request, res: Response, next: NextFunction) => {
+const authUser =  (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
         if (!token) {
@@ -14,6 +14,7 @@ const authUser = async (req: Request, res: Response, next: NextFunction) => {
                 return res.status(403).send({ status: false, message: "Token verification failed" });
             }
             if (decoded) {
+                console.log(decoded);
                 req.body.userId = decoded.payload.id;
                 next();
             }
