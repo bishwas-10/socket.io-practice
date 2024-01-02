@@ -11,6 +11,7 @@ import connectDb from "./utils/connectDb";
 
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user"
+import refresh from "./utils/refresh";
 
 
 const app = express();
@@ -67,7 +68,10 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 
 
-app.use("/api/users",authRouter,userRouter);
+app.use("/api/users",authRouter);
+
+app.use("/api/users",userRouter);
+
 //server listening on port 4000
 
 connectDb().then(()=>{

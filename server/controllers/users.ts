@@ -40,10 +40,10 @@ export const logIn = async (req: Request, res: Response) => {
       username: existingUser.username,
       email: existingUser.email,
     };
-    const expiryDate = new Date(Date.now() + 360000); //1hour
+    const expiryDate = new Date(Date.now() + 36000); //1hour
 
     res
-      .cookie("auth_token", refreshToken, {
+      .cookie("refresh_token", refreshToken, {
         expires: expiryDate,
         httpOnly: true,
         sameSite: "none",

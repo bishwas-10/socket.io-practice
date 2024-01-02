@@ -3,7 +3,7 @@ import { Request,Response } from "express";
 
 const getUser =async(req:Request, res:Response)=>{
     const userId = req.body.userId;
-    console.log(userId)
+  const token = req.body.token;
 try {
     const userExists = await User.findOne({_id:userId});
     const user = {
@@ -11,7 +11,10 @@ try {
         username: userExists?.username,
         email: userExists?.email,
       };
-    res.status(200).send({status:true, user})
+      if(token){
+        return  res.status(200).send({status:true, user,token})
+      }
+   return res.status(200).send({status:true, user})
 } catch (error) {
     console.log(error)
 }
