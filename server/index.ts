@@ -11,7 +11,7 @@ import connectDb from "./utils/connectDb";
 
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user"
-import refresh from "./utils/refresh";
+
 
 
 const app = express();
@@ -57,8 +57,15 @@ io.on("connection", (socket) => {
   socket.on("user_typing", (data) => {
     socket.broadcast.emit("typing_response", data);
   });
-  socket.on("disconnect", () => {
-    console.log("🔥: A user disconnected");
+  socket.on("leave", (data) => {
+   socket.broadcast.emit("message_response", {
+    justJoined: true,
+    message: `${data.name} has just joined the room`,
+    username: "CHAT_BOT",
+    id: `${socket.id}_${Date.now()}`,
+    socketID: socket.id,
+    room: data.room,
+  });
   });
 });
 

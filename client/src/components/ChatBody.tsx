@@ -2,26 +2,31 @@ import React, { useEffect } from "react";
 import { ChatMessage } from "./ChatFooter";
 import { useNavigate } from "react-router-dom";
 import { JoinMessageProps } from "./ChatPage";
+import { Socket } from "socket.io-client";
 
 const ChatBody = ({
   message,
   lastMessageRef,
   typingResponse,
   typingStatus,
-  joinMessage,
+ socket
 }: {
   message: ChatMessage[];
   lastMessageRef: any;
   typingResponse: string;
   typingStatus: boolean;
   joinMessage: JoinMessageProps;
+ socket:Socket
 }) => {
   const navigate = useNavigate();
   console.log(message);
   const handleLeaveCLick = () => {
+    const username = localStorage.removeItem("username");
+    const room = localStorage.removeItem("room")
+     socket.emit("leave",{username,room, socketId: socket.id})
     localStorage.removeItem("username");
     localStorage.removeItem("room");
-
+ 
     navigate("/");
   };
   const currentDate = new Date();

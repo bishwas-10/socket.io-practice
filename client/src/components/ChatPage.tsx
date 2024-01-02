@@ -55,6 +55,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
       <div className="flex flex-col w-[70%] h-full">
         <div className="h-[88%]  ">
           <ChatBody
+          socket={socket}
             message={messages}
             typingStatus={typingStatus}
             typingResponse={typingResponse}
