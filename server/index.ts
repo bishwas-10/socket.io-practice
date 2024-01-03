@@ -31,19 +31,19 @@ const io = new Server(server, {
   },
 });
 
-let users: { name: string; room: string; socketId: string }[] = [];
+let users: { username: string; room: string; socketId: string }[] = [];
 io.on("connection", (socket) => {
   console.log(`connection established with user ${socket.id}`),
     socket.on("new_user", (data) => {
-      console.log(data.socketId)
-      console.log(socket.id);
-      const userExists = users.some((user) => user.name === data.name);
+     
+      const userExists = users.some((user) => user.username === data.username);
+      console.log(userExists)
       if (!userExists) {
         users.push(data);
         socket.join(data.room);
         socket.to(data.room).emit("message_response", {
           justJoined: true,
-          message: `${data.name} has just joined the room`,
+          message: `${data.username} has just joined the room`,
           username: "CHAT_BOT",
           id: `${socket.id}_${Date.now()}`,
           socketID: socket.id,
@@ -61,20 +61,25 @@ io.on("connection", (socket) => {
   socket.on("user_typing", (data) => {
     socket.broadcast.emit("typing_response", data);
   });
+  
   socket.on("leave", (data) => {
+    console.log(users);
+   console.log(data)
     const disconnectedUser = users.find(
-      (data) => data.socketId === (socket.id as string)
+      (user) => user.username === data.username
     );
+    console.log(disconnectedUser)
     if (disconnectedUser) {
       socket.broadcast.emit("message_response", {
         justJoined: true,
-        message: `${disconnectedUser.name} has just left the room`,
+        message: `${disconnectedUser.username} has just left the room`,
         username: "CHAT_BOT",
         id: disconnectedUser.socketId,
         socketID: socket.id,
         room: disconnectedUser.room,
       });
-      users.filter((data) => data.name !== disconnectedUser.name);
+     users= users.filter((data) => data.username !== disconnectedUser.username);
+     console.log(users)
     }
   });
   socket.on("disconnect", () => {
@@ -84,13 +89,13 @@ io.on("connection", (socket) => {
     if (disconnectedUser) {
       socket.broadcast.emit("message_response", {
         justJoined: true,
-        message: `${disconnectedUser.name} has just left the room`,
+        message: `${disconnectedUser.username} has just left the room`,
         username: "CHAT_BOT",
         id: disconnectedUser.socketId,
         socketID: socket.id,
         room: disconnectedUser.room,
       });
-      users.filter((data) => data.socketId !== disconnectedUser.socketId);
+     users= users.filter((data) => data.socketId !== disconnectedUser.socketId);
     }
   });
 });

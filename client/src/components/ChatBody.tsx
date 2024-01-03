@@ -20,13 +20,16 @@ const ChatBody = ({
 }) => {
   const navigate = useNavigate();
   console.log(message);
+  const username = localStorage.getItem("username") ;
+  const room = localStorage.getItem("room")
   const handleLeaveCLick = () => {
-    const username = localStorage.removeItem("username");
-    const room = localStorage.removeItem("room")
-     socket.emit("leave",{username,room, socketId: socket.id})
-    localStorage.removeItem("username");
-    localStorage.removeItem("room");
- 
+   
+    if(username && room){
+      socket.emit("leave",{username:username,room:room, socketId: socket.id})
+      localStorage.removeItem("username");
+      localStorage.removeItem("room");
+    }
+   
     navigate("/");
   };
   const currentDate = new Date();
@@ -38,6 +41,9 @@ const ChatBody = ({
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [message, typingStatus]);
 
+  useEffect(()=>{
+    socket.emit("new_user", { username, room, socketId: socket.id });
+  },[])
   return (
     <div className="  h-full">
       <div className="px-2 navbar fixed top-0 z-10 w-full h-[12%] flex flex-row gap-4 items-center border-2 bg-[#fcd9baee]">

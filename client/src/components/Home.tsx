@@ -22,7 +22,7 @@ const Home = ({ socket }: { socket: Socket }) => {
     localStorage.setItem("username", name);
     localStorage.setItem("room", room);
 
-    socket.emit("new_user", { name, room, socketId: socket.id });
+    // socket.emit("new_user", { name, room, socketId: socket.id });
     navigate("/chat");
   }
   };
