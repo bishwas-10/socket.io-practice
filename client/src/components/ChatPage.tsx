@@ -46,11 +46,12 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
     return () => {
       socket.off("message_response");
       socket.off("typing_response");
+      socket.off("join_room");
     };
   }, [socket]);
 
   return (
-    <div className="flex flex-row w-screen h-screen max-h-screen bg-[#f5eabdee] overflow-hidden">
+    <div className="fixed top-0 flex flex-row w-screen h-screen max-h-screen bg-[#f5eabdee] overflow-hidden">
       <ChatBar socket={socket}/>
       <div className="flex flex-col w-[70%] h-full">
         <div className="h-[88%]  ">

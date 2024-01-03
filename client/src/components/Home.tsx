@@ -11,17 +11,20 @@ const Home = ({ socket }: { socket: Socket }) => {
   const userToken = useSelector(
     (state: RootState) => state.token.token as string
   );
+  const loggedUser = useSelector((state:RootState)=> state.auth)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [name, setName] = useState<string>("");
+  const name = loggedUser?.currentUser?.username as string;
   const [room, setRoom] = useState<string>("JavaScript");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  if(name && room){
     localStorage.setItem("username", name);
     localStorage.setItem("room", room);
 
     socket.emit("new_user", { name, room, socketId: socket.id });
     navigate("/chat");
+  }
   };
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setRoom(e.target.value);
@@ -58,7 +61,7 @@ const Home = ({ socket }: { socket: Socket }) => {
               type="text"
               minLength={6}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              readOnly
               name="username"
               placeholder="your-username"
               className="p-2  focus:outline-none"
