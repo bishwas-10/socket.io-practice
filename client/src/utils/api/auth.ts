@@ -22,7 +22,8 @@ export const userLogin = async (formData: FormDataProps) => {
     console.log(data);
     return data;
   } catch (error: any) {
-    console.log("Error logging in", error.response?.data);
+   console.log(error.response.data);
+   return error.response.data;
   }
 };
 
@@ -31,7 +32,18 @@ export const userSignUp = async (formData: FormDataProps) => {
     const data = await instance.post("/users/signup", formData);
     console.log(data);
     return data;
+  } catch (error:any) {
+    console.log(error.response.data)
+    return error.response.data;
+  }
+};
+
+export const userLogOut = async () => {
+  try {
+    const {data} = await instance.get("/users/signout");
+    return data;
+  
   } catch (error) {
-    console.log("Error Signing up", error);
+    console.log("Error Signing out", error);
   }
 };

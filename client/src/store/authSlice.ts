@@ -35,6 +35,11 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = true;
           },
+          signOut:(state)=>{
+            state.currentUser= null;
+            state.loading = false;
+            state.error = true;
+          }
 
     }
 })
@@ -42,6 +47,7 @@ const authSlice = createSlice({
 export const{
 signInStart,
 signInFailure,
-signInSuccess
+signInSuccess,
+signOut
 }= authSlice.actions;
 export default authSlice.reducer;

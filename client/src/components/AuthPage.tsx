@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { userLogin, userSignUp } from "../utils/api/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { signInSuccess } from "../store/authSlice";
+import { signInFailure, signInSuccess } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,7 +31,7 @@ const AuthPage = () => {
     status: false,
     message: "",
   });
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,28 +88,35 @@ const AuthPage = () => {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 2000,
           });
-        
+          setError({ status: true, message: signedUp.message });
+        } else {
+          setError({ status: true, message: signedUp.message });
         }
-        setError({status:true, message:""})
-       
+        
       }
-
-     
     } else {
       const loggedIn = await userLogin(formData);
       if (loggedIn.status) {
         dispatch(signInSuccess(loggedIn.user));
-        dispatch(setToken(loggedIn.token))
+        dispatch(setToken(loggedIn.token));
         toast.success("User logged in successfully", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 2000,
         });
         navigate("/");
+      } else {
+        dispatch(signInFailure());
+        setError({ status: true, message: loggedIn.message });
       }
     }
-   
   };
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setFormData({ username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",})
+    setError({ status: false, message: "" });
     setIsSignedUp(!isSignedUp);
   };
 
@@ -125,7 +132,7 @@ const AuthPage = () => {
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">
           {isSignedUp ? "Sign in" : "Sign up"}
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e)=>handleSubmit(e)}>
           {!isSignedUp && (
             <div className="flex flex-row gap-2">
               <div>
@@ -200,9 +207,9 @@ const AuthPage = () => {
               />
             </div>
           )}
-          {error.status && 
+          {error.status && (
             <p className="text-rose-800 mb-2">{error.message}</p>
-          }
+          )}
           <button
             type="submit"
             className="mb-6 w-full bg-blue-500 text-white py-2 rounded-md focus:outline-none focus:bg-blue-600 hover:bg-blue-600"

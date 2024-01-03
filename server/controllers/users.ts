@@ -52,7 +52,7 @@ export const logIn = async (req: Request, res: Response) => {
       .status(200)
       .send({ status: true, message: "user logged in successfully", user,token });
   } catch (error) {
-    console.log(error);
+    res.status(500).send({status:false, message:"internal server error"})
   }
 };
 
@@ -78,6 +78,16 @@ export const signUp = async (req: Request, res: Response) => {
       .status(203)
       .send({ status: true, message: "user signed in successfully" });
   } catch (error) {
-    console.log("error signing in ", error);
+    res.status(500).send({status:false, message:"internal server error"})
   }
 };
+
+
+export const signOut=(req:Request, res:Response)=>{
+  try {
+    console.log("aaipugyo yaha samma")
+    res.clearCookie("refresh_token").status(200).send({status:true,message:"signout succesfull"});
+  } catch (error) {
+    res.status(500).send({status:false, message:"internal server error"})
+  }
+}
