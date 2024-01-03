@@ -1,13 +1,18 @@
 import React,{useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
+import { RootState } from '../store/store'
 
 type Users={
-  name:string,
+  username:string,
+  room:string,
   socketId:string
 }
 const ChatBar = ({socket}:{socket:Socket}) => {
+  const loggedUser = useSelector((state:RootState)=> state.auth.currentUser);
+  const username = loggedUser?.username;
 const [activeUsers, setActiveUsers]=useState<Users[]>()
-
+console.log(activeUsers);
 useEffect(()=>{
   socket.on('users',(data:Users[])=>{
     setActiveUsers(data)
@@ -27,7 +32,7 @@ useEffect(()=>{
       {
         activeUsers?.map((user,index)=>{
           return(
-            <li key={index}>{socket.id===user.socketId ?"You": user.name}</li>
+            <li key={index}>{username===user.username ?"You": user.username}</li>
           )
         })
       }

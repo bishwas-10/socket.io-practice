@@ -31,7 +31,7 @@ const AuthPage = () => {
     status: false,
     message: "",
   });
-  console.log(error);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

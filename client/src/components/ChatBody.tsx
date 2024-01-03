@@ -19,7 +19,7 @@ const ChatBody = ({
  socket:Socket
 }) => {
   const navigate = useNavigate();
-  console.log(message);
+ 
   const username = localStorage.getItem("username") ;
   const room = localStorage.getItem("room")
   const handleLeaveCLick = () => {
@@ -43,6 +43,7 @@ const ChatBody = ({
 
   useEffect(()=>{
     socket.emit("new_user", { username, room, socketId: socket.id });
+    
   },[])
   return (
     <div className="  h-full">

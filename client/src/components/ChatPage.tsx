@@ -3,6 +3,9 @@ import ChatBar from "./ChatBar";
 import ChatBody from "./ChatBody";
 import ChatFooter, { ChatMessage } from "./ChatFooter";
 import { Socket } from "socket.io-client";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { useNavigate } from "react-router-dom";
 
 export interface JoinMessageProps {
   status:boolean,
@@ -14,6 +17,8 @@ export interface JoinMessageProps {
   }
 }
 const ChatPage = ({ socket }: { socket: Socket }) => {
+  const navigate = useNavigate();
+  const loggedUser = useSelector((state:RootState)=>state.auth.currentUser);
   const [messages, setMessgaes] = useState<ChatMessage[]>([]);
   const [typingResponse, setTypingResponse] = useState<string>("");
   const [typingStatus, setTypingStatus] = useState<boolean>(false);
@@ -25,7 +30,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
   const lastMessageRef = useRef(null);
   useEffect(() => {
     socket.on("message_response", (data) => {
-     console.log(data)
+   
        setMessgaes((messages) => [...messages, data]) 
     }
      
@@ -36,7 +41,7 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
       
     });
     socket.on('join_room',(data)=>{
-      console.log("emmited")
+     
       setJoinMessage({status:true, messages:{
         message:data.message,
         username:data.username,
@@ -50,6 +55,11 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
     };
   }, [socket]);
 
+  useEffect(()=>{
+    if(loggedUser===null){
+      navigate("/auth");
+    }
+  },[])
   return (
     <div className="fixed top-0 flex flex-row w-screen h-screen max-h-screen bg-[#f5eabdee] overflow-hidden">
       <ChatBar socket={socket}/>
