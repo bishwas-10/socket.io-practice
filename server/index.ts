@@ -19,6 +19,7 @@ app.use(
     origin: ["http://localhost:3000","https://socket-io-practice.vercel.app/"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
+    exposedHeaders: ['Access-Control-Allow-Origin'],
   })
 ); // Add cors middleware
 
@@ -29,6 +30,7 @@ const io = new Server(server, {
     origin:["http://localhost:3000","https://socket-io-practice.vercel.app/"] ,
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
+    exposedHeaders: ['Access-Control-Allow-Origin'],
   },
 });
 
