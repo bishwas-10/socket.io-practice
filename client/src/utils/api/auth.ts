@@ -2,7 +2,7 @@ import axios from "axios";
 import { FormDataProps } from "../../components/AuthPage";
 
 const instance = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "https://mern-realtimechat-app.onrender.com/api",
   withCredentials: true,
 });
 export const getUser = async (token: string) => {
