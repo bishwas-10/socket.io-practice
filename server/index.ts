@@ -13,7 +13,7 @@ import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 
 const app = express();
-
+app.set("trust proxy", 1); 
 app.use(
   cors({
     origin: ["http://localhost:3000","https://socket-io-practice.vercel.app/"],
