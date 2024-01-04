@@ -1,5 +1,8 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { useSelector } from "react-redux";
 import { Socket } from "socket.io-client";
+import { RootState } from "../store/store";
+import moment from "moment";
 
 export interface ChatMessage {
   message: string;
@@ -8,21 +11,25 @@ export interface ChatMessage {
   socketID: string;
   room:string | null;
   justJoined?:boolean;
+  time:string;
 }
 const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Dispatch<SetStateAction<boolean>>})=>{
+  const room = useSelector((state:RootState)=>state.room.room);
   const [message, setMessage] = useState<string>("");
 
-
+  let time= moment().format(' h:mm a');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(room);
     if(message.trim() && localStorage.getItem("username")){
       const newMessage:ChatMessage ={
         message: message,
         username: localStorage.getItem("username") as string,
         id: `${socket.id}_${Date.now()}`,
         socketID:socket.id,
-        room:localStorage.getItem("room") as string,
+        room:room,
+        time:time,
       }
       socket.emit('message', newMessage);
       
@@ -31,7 +38,10 @@ const ChatFooter = ({socket,setTypingStatus}:{socket:Socket,setTypingStatus:Disp
   };
 
   const handleUserTyping=()=>{
-    socket.emit('user_typing',`${localStorage.getItem('username')} is typing..`)
+    socket.emit('user_typing',{
+      room,
+      message:`${localStorage.getItem("username")} is typing...`
+    })
   }
   const onKeyUp=()=>{
     setTypingStatus(false)

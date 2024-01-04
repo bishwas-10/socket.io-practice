@@ -6,6 +6,7 @@ import { Socket } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../utils/api/auth";
 
 export interface JoinMessageProps {
   status:boolean,
@@ -18,6 +19,9 @@ export interface JoinMessageProps {
 }
 const ChatPage = ({ socket }: { socket: Socket }) => {
   const navigate = useNavigate();
+  const userToken = useSelector(
+    (state: RootState) => state.token.token as string
+  );
   const loggedUser = useSelector((state:RootState)=>state.auth.currentUser);
   const [messages, setMessgaes] = useState<ChatMessage[]>([]);
   const [typingResponse, setTypingResponse] = useState<string>("");
@@ -55,11 +59,17 @@ const ChatPage = ({ socket }: { socket: Socket }) => {
     };
   }, [socket]);
 
-  useEffect(()=>{
-    if(loggedUser===null){
-      navigate("/auth");
-    }
-  },[])
+  const userDetails = async () => {
+    const data = await getUser(userToken);
+    if (data) {
+      if (!data.status) {
+        navigate("/auth")
+      }
+    
+  };}
+  useEffect(() => {
+    userDetails();
+  }, []);
   return (
     <div className="fixed top-0 flex flex-row w-screen h-screen max-h-screen bg-[#f5eabdee] overflow-hidden">
       <ChatBar socket={socket}/>

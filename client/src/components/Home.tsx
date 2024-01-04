@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUser } from "../utils/api/auth";
 import { signInSuccess } from "../store/authSlice";
+import { setSelectedRoom } from "../store/roomSlice";
 const Home = ({ socket }: { socket: Socket }) => {
   const userToken = useSelector(
     (state: RootState) => state.token.token as string
@@ -15,12 +16,13 @@ const Home = ({ socket }: { socket: Socket }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const name = loggedUser?.currentUser?.username as string;
-  const [room, setRoom] = useState<string>("JavaScript");
+    const currentRoom = useSelector((state:RootState)=> state.room.room)
+  const [room, setRoom] = useState<string>(currentRoom as string);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   if(name && room){
     localStorage.setItem("username", name);
-    localStorage.setItem("room", room);
+    dispatch(setSelectedRoom(room));
 
     // socket.emit("new_user", { name, room, socketId: socket.id });
     navigate("/chat");

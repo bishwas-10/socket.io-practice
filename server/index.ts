@@ -35,7 +35,7 @@ let users: { username: string; room: string; socketId: string }[] = [];
 io.on("connection", (socket) => {
   console.log(`connection established with user ${socket.id}`),
     socket.on("new_user", (data) => {
-      
+      console.log(data);
       const userExists = users.some((user) => user.username === data.username);
       
       if (!userExists) {
@@ -51,14 +51,14 @@ io.on("connection", (socket) => {
           room: data.room,
         });
       
-      io.emit("users", users);
+      io.to(data.room).emit("users", users);
     });
   socket.on("message", (data) => {
-    io.emit("message_response", data);
+    io.to(data.room).emit("message_response", data);
   });
 
   socket.on("user_typing", (data) => {
-    socket.broadcast.emit("typing_response", data);
+    socket.broadcast.to(data.room).emit("typing_response", data.message);
   });
 
   socket.on("leave", (data) => {
@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
     );
 
     if (disconnectedUser) {
-      socket.broadcast.emit("message_response", {
+      socket.broadcast.to(disconnectedUser.room).emit("message_response", {
         justJoined: true,
         message: `${disconnectedUser.username} has just left the room`,
         username: "CHAT_BOT",
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
       users = users.filter(
         (data) => data.username !== disconnectedUser.username
       );
-      io.emit("users", users);
+      io.to(disconnectedUser.room).emit("users", users);
     }
   });
   socket.on("disconnect", () => {
@@ -86,7 +86,7 @@ io.on("connection", (socket) => {
       (data) => data.socketId === socket.id 
     );
     if (disconnectedUser) {
-      socket.broadcast.emit("message_response", {
+      socket.broadcast.to(disconnectedUser.room).emit("message_response", {
         justJoined: true,
         message: `${disconnectedUser.username} has just left the room`,
         username: "CHAT_BOT",
@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
       users = users.filter(
         (data) => data.username !== disconnectedUser.username
       );
-      io.emit("users", users);
+      io.to(disconnectedUser.room).emit("users", users);
     }
   });
 });
