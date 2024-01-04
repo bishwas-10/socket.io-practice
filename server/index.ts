@@ -27,7 +27,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin:"https://socket-io-practice.vercel.app/" ,
+    origin:"https://socket-io-practice.vercel.app" ,
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ['Access-Control-Allow-Origin'],
