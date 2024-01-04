@@ -16,7 +16,7 @@ const app = express();
 app.set("trust proxy", 1); 
 app.use(
   cors({
-    origin: "https://socket-io-practice.vercel.app/",
+    origin: ["http://localhost:3000","https://socket-io-practice.vercel.app/"],
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ['Access-Control-Allow-Origin'],
@@ -27,7 +27,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin:["http://localhost:3000","https://socket-io-practice.vercel.app/"] ,
+    origin:"https://socket-io-practice.vercel.app/" ,
     methods: "GET,POST, PUT, DELETE, PATCH",
     credentials: true,
     exposedHeaders: ['Access-Control-Allow-Origin'],
