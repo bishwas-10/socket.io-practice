@@ -6,7 +6,8 @@ import Home from './components/Home';
 import AuthPage from './components/AuthPage';
 import NavBar from './components/NavBar';
 
-const socket = io('https://mern-realtimechat-app.onrender.com/')
+const socket = io('https://mern-realtimechat-app.onrender.com/'
+)
 function App() {
 
   return (
